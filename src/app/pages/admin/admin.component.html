@@ -1,0 +1,232 @@
+<div class="admin">
+  <header class="admin-bar">
+    <div class="bar-left">
+      <span class="mono accent">/admin</span>
+      <a routerLink="/" class="mono view-link">view site ↗</a>
+    </div>
+    <div class="bar-actions">
+      @if (savedFlash()) {
+        <span class="saved mono">saved ✓</span>
+      }
+      <button class="btn ghost" (click)="reset()">Reset defaults</button>
+      <button class="btn ghost" (click)="exportJson()">Export JSON</button>
+      <label class="btn ghost import-label">
+        Import JSON
+        <input type="file" accept=".json,application/json" (change)="onImportFile($event)" hidden />
+      </label>
+      <button class="btn primary" (click)="save()">Save</button>
+      <button class="btn danger" (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <main class="admin-main">
+    <!-- IDENTITY -->
+    <section class="panel">
+      <h3 class="mono">Identity</h3>
+      <div class="grid-2">
+        <label>Name <input [(ngModel)]="draft.name" /></label>
+        <label>Title <input [(ngModel)]="draft.title" /></label>
+        <label>Email <input [(ngModel)]="draft.email" /></label>
+        <label>Phone <input [(ngModel)]="draft.phone" /></label>
+        <label>Location <input [(ngModel)]="draft.location" /></label>
+        <label>LinkedIn URL <input [(ngModel)]="draft.linkedin" /></label>
+        <label>GitHub URL <input [(ngModel)]="draft.github" /></label>
+      </div>
+      <div class="logo-field">
+        <span class="logo-preview">
+          @if (draft.profileImage) {
+            <img [src]="draft.profileImage" alt="Profile preview" />
+          } @else {
+            <span class="mono">—</span>
+          }
+        </span>
+        <label class="btn ghost sm import-label">
+          Upload profile photo
+          <input type="file" accept="image/*" (change)="onImageFile(draft, 'profileImage', $event)" hidden />
+        </label>
+        @if (draft.profileImage) {
+          <button class="btn danger sm" (click)="clearImage(draft, 'profileImage')">✕ remove</button>
+        }
+      </div>
+      <label>Tagline <input [(ngModel)]="draft.tagline" /></label>
+      <label>Summary <textarea rows="4" [(ngModel)]="draft.summary"></textarea></label>
+      <label>Interests (comma-separated)
+        <input [ngModel]="listText(draft.interests)" (ngModelChange)="setList(draft, 'interests', $event)" />
+      </label>
+    </section>
+
+    <!-- STATS -->
+    <section class="panel">
+      <div class="panel-head">
+        <h3 class="mono">Stats</h3>
+        <button class="btn ghost sm" (click)="addStat()">+ add</button>
+      </div>
+      @for (stat of draft.stats; track $index) {
+        <div class="row">
+          <input class="w-sm" placeholder="Value" [(ngModel)]="stat.value" />
+          <input placeholder="Label" [(ngModel)]="stat.label" />
+          <button class="btn danger sm" (click)="removeAt(draft.stats, $index)">✕</button>
+        </div>
+      }
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section class="panel">
+      <div class="panel-head">
+        <h3 class="mono">Experience</h3>
+        <button class="btn ghost sm" (click)="addExperience()">+ add</button>
+      </div>
+      @for (exp of draft.experiences; track $index) {
+        <div class="item-card">
+          <div class="item-tools">
+            <button class="btn ghost sm" (click)="moveUp(draft.experiences, $index)">↑</button>
+            <button class="btn danger sm" (click)="removeAt(draft.experiences, $index)">✕</button>
+          </div>
+          <div class="grid-2">
+            <label>Role <input [(ngModel)]="exp.role" /></label>
+            <label>Company <input [(ngModel)]="exp.company" /></label>
+            <label>Period <input [(ngModel)]="exp.period" /></label>
+            <label>Location <input [(ngModel)]="exp.location" /></label>
+          </div>
+          <label>Bullets (one per line)
+            <textarea rows="4" [ngModel]="bulletsText(exp)" (ngModelChange)="setBullets(exp, $event)"></textarea>
+          </label>
+          <div class="logo-field">
+            <span class="logo-preview">
+              @if (exp.logo) {
+                <img [src]="exp.logo" alt="Company logo preview" />
+              } @else {
+                <span class="mono">logo</span>
+              }
+            </span>
+            <label class="btn ghost sm import-label">
+              Upload company logo
+              <input type="file" accept="image/*" (change)="onImageFile(exp, 'logo', $event)" hidden />
+            </label>
+            @if (exp.logo) {
+              <button class="btn danger sm" (click)="clearImage(exp, 'logo')">✕ remove</button>
+            }
+          </div>
+        </div>
+      }
+    </section>
+
+    <!-- PROJECTS -->
+    <section class="panel">
+      <div class="panel-head">
+        <h3 class="mono">Projects</h3>
+        <button class="btn ghost sm" (click)="addProject()">+ add</button>
+      </div>
+      @for (project of draft.projects; track $index) {
+        <div class="item-card">
+          <div class="item-tools">
+            <label class="featured-toggle mono">
+              <input type="checkbox" [(ngModel)]="project.featured" /> featured
+            </label>
+            <button class="btn ghost sm" (click)="moveUp(draft.projects, $index)">↑</button>
+            <button class="btn danger sm" (click)="removeAt(draft.projects, $index)">✕</button>
+          </div>
+          <div class="grid-2">
+            <label>Name <input [(ngModel)]="project.name" /></label>
+            <label>Link (optional) <input [(ngModel)]="project.link" placeholder="https://…" /></label>
+          </div>
+          <label>Description <textarea rows="3" [(ngModel)]="project.description"></textarea></label>
+          <label>Tech (comma-separated)
+            <input [ngModel]="listText(project.tech)" (ngModelChange)="setList(project, 'tech', $event)" />
+          </label>
+          <div class="logo-field">
+            <span class="logo-preview">
+              @if (project.logo) {
+                <img [src]="project.logo" alt="Project logo preview" />
+              } @else {
+                <span class="mono">logo</span>
+              }
+            </span>
+            <label class="btn ghost sm import-label">
+              Upload project logo
+              <input type="file" accept="image/*" (change)="onImageFile(project, 'logo', $event)" hidden />
+            </label>
+            @if (project.logo) {
+              <button class="btn danger sm" (click)="clearImage(project, 'logo')">✕ remove</button>
+            }
+          </div>
+        </div>
+      }
+    </section>
+
+    <!-- EDUCATION -->
+    <section class="panel">
+      <div class="panel-head">
+        <h3 class="mono">Education</h3>
+        <button class="btn ghost sm" (click)="addEducation()">+ add</button>
+      </div>
+      @for (edu of draft.education; track $index) {
+        <div class="item-card">
+          <div class="item-tools">
+            <button class="btn danger sm" (click)="removeAt(draft.education, $index)">✕</button>
+          </div>
+          <div class="grid-2">
+            <label>Degree <input [(ngModel)]="edu.degree" /></label>
+            <label>School <input [(ngModel)]="edu.school" /></label>
+            <label>Period <input [(ngModel)]="edu.period" /></label>
+            <label>Location <input [(ngModel)]="edu.location" /></label>
+          </div>
+          <label>Details <textarea rows="2" [(ngModel)]="edu.details"></textarea></label>
+        </div>
+      }
+    </section>
+
+    <!-- SKILLS -->
+    <section class="panel">
+      <div class="panel-head">
+        <h3 class="mono">Skills</h3>
+        <button class="btn ghost sm" (click)="addSkillGroup()">+ add group</button>
+      </div>
+      @for (group of draft.skills; track $index) {
+        <div class="row">
+          <input class="w-sm" placeholder="Category" [(ngModel)]="group.category" />
+          <input placeholder="Items (comma-separated)" [ngModel]="listText(group.items)" (ngModelChange)="setList(group, 'items', $event)" />
+          <button class="btn danger sm" (click)="removeAt(draft.skills, $index)">✕</button>
+        </div>
+      }
+      <label>Certifications (comma-separated)
+        <input [ngModel]="listText(draft.certifications)" (ngModelChange)="setList(draft, 'certifications', $event)" />
+      </label>
+    </section>
+
+    <!-- LANGUAGES -->
+    <section class="panel">
+      <div class="panel-head">
+        <h3 class="mono">Languages</h3>
+        <button class="btn ghost sm" (click)="addLanguage()">+ add</button>
+      </div>
+      @for (lang of draft.languages; track $index) {
+        <div class="row">
+          <input class="w-sm" placeholder="Language" [(ngModel)]="lang.name" />
+          <input placeholder="Level" [(ngModel)]="lang.level" />
+          <button class="btn danger sm" (click)="removeAt(draft.languages, $index)">✕</button>
+        </div>
+      }
+    </section>
+
+    <!-- SECURITY -->
+    <section class="panel">
+      <h3 class="mono">Security</h3>
+      <div class="grid-2">
+        <label>Current passcode <input type="password" [(ngModel)]="currentPass" /></label>
+        <label>New passcode <input type="password" [(ngModel)]="newPass" /></label>
+      </div>
+      <div class="row">
+        <button class="btn ghost" (click)="changePass()">Change passcode</button>
+        @if (passMsg()) {
+          <span class="mono pass-msg">{{ passMsg() }}</span>
+        }
+      </div>
+    </section>
+
+    <p class="hint mono">
+      Edits save to this browser (localStorage). To make them permanent for all visitors:
+      Export JSON, then replace the content of src/app/data/default-portfolio.ts and redeploy.
+    </p>
+  </main>
+</div>
