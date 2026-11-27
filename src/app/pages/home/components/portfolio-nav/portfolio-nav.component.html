@@ -1,0 +1,26 @@
+<nav class="nav" [class.is-scrolled]="scrolled()" [class.is-hidden]="hidden()" aria-label="Primary navigation">
+  <div class="nav-inner">
+    <button class="brand" type="button" [appMagnetic]="0.22" appCursorText="Home" (click)="goTo('hero')" aria-label="Scroll to hero">
+      <span class="brand-mark">
+        <span class="brand-mark__front mono">SER</span>
+        <span class="brand-mark__back mono">{{ initials() }}</span>
+      </span>
+      <span class="brand-cursor" aria-hidden="true">_</span>
+    </button>
+
+    <div class="nav-links" role="list">
+      @for (item of items; track item.id) {
+        <button
+          type="button"
+          role="listitem"
+          [appMagnetic]="0.18"
+          [appCursorText]="item.label"
+          [class.is-active]="activeId() === item.id"
+          (click)="goTo(item.id)"
+        >
+          <span>{{ item.label }}</span>
+        </button>
+      }
+    </div>
+  </div>
+</nav>

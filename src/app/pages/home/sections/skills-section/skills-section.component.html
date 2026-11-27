@@ -1,0 +1,31 @@
+<section class="section skills-section" id="skills" aria-labelledby="skills-title">
+  <div class="section-head" appReveal>
+    <span class="section-index mono">04</span>
+    <h3 id="skills-title">Skills</h3>
+  </div>
+
+  <div class="skills-orbit" appStagger=".skill-group">
+    @for (group of data().skills; track group.category; let index = $index) {
+      <article class="skill-group" [style.--skill-index]="index" [appMagnetic]="0.1" appCursorText="Stack">
+        <div class="skill-group__top">
+          <h4 class="mono">{{ group.category }}</h4>
+          <span class="skill-ring" aria-hidden="true"></span>
+        </div>
+        <div class="tech-row">
+          @for (item of group.items; track item) {
+            <span class="tech mono">{{ item }}</span>
+          }
+        </div>
+      </article>
+    }
+  </div>
+
+  <div class="certs" appReveal>
+    <h4 class="mono">Certifications</h4>
+    <div class="tech-row">
+      @for (cert of data().certifications; track cert) {
+        <span class="chip">{{ cert }}</span>
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,15 @@
+<footer class="footer" appReveal>
+  <button class="footer-cta" type="button" [appMagnetic]="0.12" appCursorText="Top" (click)="goTo('hero')">
+    <span class="footer-name">{{ data().name }}</span>
+    <span class="footer-title mono">{{ data().title }}</span>
+  </button>
+
+  <div class="footer-bottom">
+    <span class="mono">© {{ year() }} {{ data().name }}</span>
+    <div class="footer-socials">
+      <a class="mono" [href]="data().linkedin" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="mono" [href]="data().github" target="_blank" rel="noopener">GitHub</a>
+      <a routerLink="/admin/login" class="admin-link mono" title="Owner access">·</a>
+    </div>
+  </div>
+</footer>

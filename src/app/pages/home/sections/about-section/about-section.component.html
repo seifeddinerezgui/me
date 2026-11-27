@@ -1,0 +1,45 @@
+<section class="section about-section" id="about" aria-labelledby="about-title">
+  <div class="section-head" appReveal>
+    <span class="section-index mono">01</span>
+    <h3 id="about-title">Profile</h3>
+  </div>
+
+  <div class="about-layout">
+    <aside class="about-media" appReveal [appRevealY]="32">
+      <div class="about-photo" [appParallax]="24">
+        <img
+          [src]="data().profileImage || 'profile.jpeg'"
+          [alt]="data().name"
+          width="520"
+          height="640"
+          loading="lazy"
+          decoding="async"
+        />
+        <span class="about-photo__mask" aria-hidden="true"></span>
+      </div>
+      <div class="about-meta mono">
+        <span>{{ data().location }}</span>
+        <span>{{ data().title }}</span>
+      </div>
+    </aside>
+
+    <div class="about-copy">
+      <p class="about-text" appTextReveal="lines">{{ data().summary }}</p>
+
+      <div class="interest-chips" appStagger=".chip">
+        @for (interest of data().interests; track interest) {
+          <span class="chip">{{ interest }}</span>
+        }
+      </div>
+
+      <div class="about-metrics" appStagger=".metric">
+        @for (stat of data().stats; track stat.label) {
+          <div class="metric">
+            <span class="metric-value mono">{{ stat.value }}</span>
+            <span class="metric-label">{{ stat.label }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>

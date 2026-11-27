@@ -1,267 +1,29 @@
-<!-- cursor spotlight + ambient background -->
-<div
-  class="cursor-glow"
-  aria-hidden="true"
-  [style.transform]="'translate(' + mouseX() + 'px,' + mouseY() + 'px)'"
-></div>
-<div class="orbs" aria-hidden="true">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
+@if (loaderVisible()) {
+  <app-site-loader [name]="data().name" [title]="data().title" />
+}
+
+<app-site-cursor />
+
+<div class="portfolio-shell">
+  <div class="ambient-field" aria-hidden="true">
+    <span class="ambient-field__wash"></span>
+    <span class="ambient-field__grid"></span>
+    <span class="ambient-field__noise"></span>
+  </div>
+
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <app-portfolio-nav [name]="data().name" (navigate)="scrollTo($event)" />
+
+  <main id="main-content">
+    <app-hero-section [data]="data()" (navigate)="scrollTo($event)" />
+    <app-about-section [data]="data()" />
+    <app-experience-section [data]="data()" />
+    <app-projects-section [data]="data()" />
+    <app-skills-section [data]="data()" />
+    <app-education-section [data]="data()" />
+    <app-contact-section [data]="data()" />
+  </main>
+
+  <app-site-footer [data]="data()" [year]="year" (navigate)="scrollTo($event)" />
 </div>
-
-<!-- ======================= NAV ======================= -->
-<nav class="nav">
-  <div class="nav-inner">
-    <button class="brand" (click)="scrollTo('hero')">
-      <span class="brand-mark">SER</span><span class="brand-cursor">_</span>
-    </button>
-    <div class="nav-links">
-      <button (click)="scrollTo('experience')">Experience</button>
-      <button (click)="scrollTo('projects')">Projects</button>
-      <button (click)="scrollTo('skills')">Skills</button>
-      <button (click)="scrollTo('education')">Education</button>
-      <button class="nav-cta" (click)="scrollTo('contact')">Contact</button>
-    </div>
-  </div>
-</nav>
-
-<!-- ======================= HERO ======================= -->
-<header class="hero" id="hero">
-  <div class="grid-bg" aria-hidden="true"></div>
-  <div class="hero-inner">
-    <div class="hero-text">
-      <p class="hero-kicker mono">// {{ data().location }} — open to relocation</p>
-      <h1 class="hero-name">{{ data().name }}</h1>
-      <h2 class="hero-title">
-        <span class="accent">{{ data().title }}</span>
-      </h2>
-      <p class="hero-tagline">{{ data().tagline }}</p>
-      <div class="hero-actions">
-        <button class="btn btn-primary" (click)="scrollTo('projects')">View projects</button>
-        <a class="btn btn-ghost" [href]="'mailto:' + data().email">Get in touch</a>
-      </div>
-    </div>
-
-    <div class="hero-photo">
-      <div class="photo-frame">
-        <div class="photo-ring" aria-hidden="true"></div>
-        <img [src]="data().profileImage || 'profile.jpeg'" [alt]="data().name" />
-        <div class="photo-scan" aria-hidden="true"></div>
-      </div>
-      <div class="photo-caption mono">
-        <span class="dot" aria-hidden="true"></span> {{ data().title }}
-      </div>
-    </div>
-  </div>
-
-  <div class="hero-stats">
-    @for (stat of data().stats; track stat.label) {
-      <div class="stat">
-        <span class="stat-value mono">{{ stat.value }}</span>
-        <span class="stat-label">{{ stat.label }}</span>
-      </div>
-    }
-  </div>
-</header>
-
-<!-- ======================= TICKER ======================= -->
-<div class="ticker" aria-hidden="true">
-  <div class="ticker-track">
-    @for (item of tickerItems(); track $index) {
-      <span class="ticker-item mono">{{ item }} <span class="ticker-sep">▲</span></span>
-    }
-  </div>
-</div>
-
-<!-- ======================= ABOUT ======================= -->
-<section class="section" id="about">
-  <div class="section-head">
-    <span class="section-index mono">01</span>
-    <h3>Profile</h3>
-  </div>
-  <p class="about-text">{{ data().summary }}</p>
-  <div class="interest-chips">
-    @for (interest of data().interests; track interest) {
-      <span class="chip">{{ interest }}</span>
-    }
-  </div>
-</section>
-
-<!-- ======================= EXPERIENCE ======================= -->
-<section class="section" id="experience">
-  <div class="section-head">
-    <span class="section-index mono">02</span>
-    <h3>Experience</h3>
-  </div>
-  <div class="timeline">
-    @for (exp of data().experiences; track exp.role + exp.period) {
-      <div class="timeline-item">
-        <div class="timeline-marker"></div>
-        <div class="timeline-card card">
-          <div class="timeline-meta">
-            <span class="period mono">{{ exp.period }}</span>
-            <span class="place">{{ exp.location }}</span>
-          </div>
-          <div class="entity-row">
-            <span class="entity-logo">
-              @if (exp.logo) {
-                <img [src]="exp.logo" [alt]="exp.company + ' logo'" />
-              } @else {
-                <span class="monogram mono">{{ initials(exp.company) }}</span>
-              }
-            </span>
-            <span>
-              <h4>{{ exp.role }}</h4>
-              <p class="company accent">{{ exp.company }}</p>
-            </span>
-          </div>
-          <ul>
-            @for (bullet of exp.bullets; track $index) {
-              <li>{{ bullet }}</li>
-            }
-          </ul>
-        </div>
-      </div>
-    }
-  </div>
-</section>
-
-<!-- ======================= PROJECTS ======================= -->
-<section class="section" id="projects">
-  <div class="section-head">
-    <span class="section-index mono">03</span>
-    <h3>Projects</h3>
-  </div>
-
-  <div class="projects-featured">
-    @for (project of featuredProjects(); track project.name) {
-      <article class="project-card card featured">
-        <div class="project-top">
-          <span class="entity-logo">
-            @if (project.logo) {
-              <img [src]="project.logo" [alt]="project.name + ' logo'" />
-            } @else {
-              <span class="monogram mono">{{ initials(project.name) }}</span>
-            }
-          </span>
-          <span class="project-flag mono">★ featured</span>
-          @if (project.link) {
-            <a class="project-link mono" [href]="project.link" target="_blank" rel="noopener">open ↗</a>
-          }
-        </div>
-        <h4>{{ project.name }}</h4>
-        <p>{{ project.description }}</p>
-        <div class="tech-row">
-          @for (t of project.tech; track t) {
-            <span class="tech mono">{{ t }}</span>
-          }
-        </div>
-      </article>
-    }
-  </div>
-
-  <div class="projects-grid">
-    @for (project of otherProjects(); track project.name) {
-      <article class="project-card card">
-        <div class="project-top">
-          <span class="entity-logo">
-            @if (project.logo) {
-              <img [src]="project.logo" [alt]="project.name + ' logo'" />
-            } @else {
-              <span class="monogram mono">{{ initials(project.name) }}</span>
-            }
-          </span>
-          <span class="project-flag mono">/project</span>
-          @if (project.link) {
-            <a class="project-link mono" [href]="project.link" target="_blank" rel="noopener">open ↗</a>
-          }
-        </div>
-        <h4>{{ project.name }}</h4>
-        <p>{{ project.description }}</p>
-        <div class="tech-row">
-          @for (t of project.tech; track t) {
-            <span class="tech mono">{{ t }}</span>
-          }
-        </div>
-      </article>
-    }
-  </div>
-</section>
-
-<!-- ======================= SKILLS ======================= -->
-<section class="section" id="skills">
-  <div class="section-head">
-    <span class="section-index mono">04</span>
-    <h3>Skills</h3>
-  </div>
-  <div class="skills-grid">
-    @for (group of data().skills; track group.category) {
-      <div class="skill-group card">
-        <h4 class="mono accent">{{ group.category }}</h4>
-        <div class="tech-row">
-          @for (item of group.items; track item) {
-            <span class="tech mono">{{ item }}</span>
-          }
-        </div>
-      </div>
-    }
-  </div>
-
-  <div class="certs card">
-    <h4 class="mono accent">Certifications</h4>
-    <div class="tech-row">
-      @for (cert of data().certifications; track cert) {
-        <span class="chip">{{ cert }}</span>
-      }
-    </div>
-  </div>
-</section>
-
-<!-- ======================= EDUCATION ======================= -->
-<section class="section" id="education">
-  <div class="section-head">
-    <span class="section-index mono">05</span>
-    <h3>Education</h3>
-  </div>
-  <div class="education-grid">
-    @for (edu of data().education; track edu.degree) {
-      <div class="card edu-card">
-        <span class="period mono">{{ edu.period }}</span>
-        <h4>{{ edu.degree }}</h4>
-        <p class="company accent">{{ edu.school }}</p>
-        <p class="edu-details">{{ edu.details }}</p>
-        <span class="place">{{ edu.location }}</span>
-      </div>
-    }
-  </div>
-
-  <div class="languages-row">
-    @for (lang of data().languages; track lang.name) {
-      <div class="lang">
-        <span class="lang-name">{{ lang.name }}</span>
-        <span class="lang-level mono">{{ lang.level }}</span>
-      </div>
-    }
-  </div>
-</section>
-
-<!-- ======================= CONTACT ======================= -->
-<section class="section contact" id="contact">
-  <div class="section-head">
-    <span class="section-index mono">06</span>
-    <h3>Contact</h3>
-  </div>
-  <p class="contact-lead">Interested in InsurTech, Fintech or banking projects? Let's talk.</p>
-  <div class="contact-links">
-    <a class="btn btn-primary" [href]="'mailto:' + data().email">{{ data().email }}</a>
-    <a class="btn btn-ghost" [href]="data().linkedin" target="_blank" rel="noopener">LinkedIn</a>
-    <a class="btn btn-ghost" [href]="data().github" target="_blank" rel="noopener">GitHub</a>
-    <span class="btn btn-ghost phone mono">{{ data().phone }}</span>
-  </div>
-</section>
-
-<footer class="footer">
-  <span class="mono">© {{ year }} {{ data().name }}</span>
-  <a routerLink="/admin/login" class="admin-link mono" title="Owner access">·</a>
-</footer>

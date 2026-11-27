@@ -1,0 +1,27 @@
+<section class="section education-section" id="education" aria-labelledby="education-title">
+  <div class="section-head" appReveal>
+    <span class="section-index mono">05</span>
+    <h3 id="education-title">Education</h3>
+  </div>
+
+  <div class="education-grid" appStagger=".edu-card">
+    @for (edu of data().education; track edu.degree) {
+      <article class="edu-card" [appMagnetic]="0.08" [appMagneticTilt]="true" appCursorText="Degree">
+        <span class="period mono">{{ edu.period }}</span>
+        <h4>{{ edu.degree }}</h4>
+        <p class="company">{{ edu.school }}</p>
+        <p class="edu-details">{{ edu.details }}</p>
+        <span class="place">{{ edu.location }}</span>
+      </article>
+    }
+  </div>
+
+  <div class="languages-row" appStagger=".lang">
+    @for (lang of data().languages; track lang.name) {
+      <div class="lang">
+        <span class="lang-name">{{ lang.name }}</span>
+        <span class="lang-level mono">{{ lang.level }}</span>
+      </div>
+    }
+  </div>
+</section>

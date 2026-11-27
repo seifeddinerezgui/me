@@ -1,0 +1,13 @@
+@if (cursor.enabled()) {
+  <div
+    class="site-cursor"
+    aria-hidden="true"
+    [class.is-visible]="cursor.visible()"
+    [class.is-active]="cursor.active()"
+    [style.transform]="transform()"
+  >
+    @if (cursor.text()) {
+      <span>{{ cursor.text() }}</span>
+    }
+  </div>
+}

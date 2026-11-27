@@ -1,0 +1,11 @@
+<div class="loader" role="status" aria-live="polite" @loaderState>
+  <div class="loader__grain" aria-hidden="true"></div>
+  <div class="loader__panel">
+    <span class="loader__mark mono">SER</span>
+    <span class="loader__name">{{ name() }}</span>
+    <span class="loader__title mono">{{ title() }}</span>
+    <span class="loader__track" aria-hidden="true">
+      <span #loadingLine class="loader__line"></span>
+    </span>
+  </div>
+</div>

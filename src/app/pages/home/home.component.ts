@@ -1,48 +1,71 @@
-import { Component, HostListener, computed, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { AfterViewInit, Component, DestroyRef, ElementRef, inject, signal } from '@angular/core';
+import { CursorService } from '../../animation/services/cursor.service';
+import { MotionService } from '../../animation/services/motion.service';
+import { ScrollService } from '../../animation/services/scroll.service';
 import { PortfolioService } from '../../services/portfolio.service';
+import { PortfolioNavComponent } from './components/portfolio-nav/portfolio-nav.component';
+import { SiteCursorComponent } from './components/site-cursor/site-cursor.component';
+import { SiteFooterComponent } from './components/site-footer/site-footer.component';
+import { SiteLoaderComponent } from './components/site-loader/site-loader.component';
+import { AboutSectionComponent } from './sections/about-section/about-section.component';
+import { ContactSectionComponent } from './sections/contact-section/contact-section.component';
+import { EducationSectionComponent } from './sections/education-section/education-section.component';
+import { ExperienceSectionComponent } from './sections/experience-section/experience-section.component';
+import { HeroSectionComponent } from './sections/hero-section/hero-section.component';
+import { ProjectsSectionComponent } from './sections/projects-section/projects-section.component';
+import { SkillsSectionComponent } from './sections/skills-section/skills-section.component';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink],
+  imports: [
+    SiteLoaderComponent,
+    SiteCursorComponent,
+    PortfolioNavComponent,
+    HeroSectionComponent,
+    AboutSectionComponent,
+    ExperienceSectionComponent,
+    ProjectsSectionComponent,
+    SkillsSectionComponent,
+    EducationSectionComponent,
+    ContactSectionComponent,
+    SiteFooterComponent
+  ],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  styleUrl: './home.component.scss'
 })
-export class HomeComponent {
-  private portfolio = inject(PortfolioService);
+export class HomeComponent implements AfterViewInit {
+  private readonly portfolio = inject(PortfolioService);
+  private readonly scroll = inject(ScrollService);
+  private readonly cursor = inject(CursorService);
+  private readonly motion = inject(MotionService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
 
   readonly data = this.portfolio.data;
   readonly year = new Date().getFullYear();
+  readonly loaderVisible = signal(true);
 
-  // flat skill list duplicated for the seamless ticker loop
-  readonly tickerItems = computed(() => {
-    const items = this.data().skills.flatMap(g => g.items);
-    return [...items, ...items];
-  });
+  ngAfterViewInit(): void {
+    this.scroll.init();
+    this.cursor.init();
 
-  readonly featuredProjects = computed(() => this.data().projects.filter(p => p.featured));
-  readonly otherProjects = computed(() => this.data().projects.filter(p => !p.featured));
+    const cleanupIntro = this.motion.pageIntro(this.elementRef.nativeElement);
+    this.destroyRef.onDestroy(cleanupIntro);
 
-  // cursor spotlight position
-  readonly mouseX = signal(-500);
-  readonly mouseY = signal(-500);
+    if (!this.motion.isBrowser) {
+      this.loaderVisible.set(false);
+      return;
+    }
 
-  @HostListener('window:mousemove', ['$event'])
-  onMouseMove(event: MouseEvent): void {
-    this.mouseX.set(event.clientX);
-    this.mouseY.set(event.clientY);
-  }
+    const timeout = window.setTimeout(
+      () => this.loaderVisible.set(false),
+      this.motion.reducedMotion() ? 260 : 2280
+    );
 
-  initials(name: string): string {
-    return name
-      .split(/[\s—-]+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map(w => w[0].toUpperCase())
-      .join('');
+    this.destroyRef.onDestroy(() => window.clearTimeout(timeout));
   }
 
   scrollTo(id: string): void {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    this.scroll.scrollTo(id);
   }
 }

@@ -1,0 +1,92 @@
+<header class="hero" id="hero" aria-labelledby="hero-title">
+  <div class="hero-grid" aria-hidden="true"></div>
+  <div class="hero-glow hero-glow--cyan" aria-hidden="true"></div>
+  <div class="hero-glow hero-glow--gold" aria-hidden="true"></div>
+
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <p class="hero-kicker mono" data-intro>// {{ data().location }} — open to relocation</p>
+      <h1 id="hero-title" class="hero-name" data-intro appTextReveal="words" [appTextRevealDelay]="1.68">
+        {{ data().name }}
+      </h1>
+      <h2 class="hero-title" data-intro>
+        <span>{{ data().title }}</span>
+      </h2>
+      <p class="hero-tagline" data-intro>{{ data().tagline }}</p>
+
+      <div class="hero-actions" data-intro-late>
+        <button class="btn btn-primary" type="button" [appMagnetic]="0.24" appCursorText="Projects" (click)="goTo('projects')">
+          <span>View projects</span>
+          <span class="btn-arrow" aria-hidden="true">↗</span>
+        </button>
+        <a class="btn btn-ghost" [appMagnetic]="0.24" appCursorText="Email" [href]="'mailto:' + data().email">
+          Get in touch
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-visual" [appParallax]="-28" data-intro-late>
+      <div class="quant-panel" [appMagnetic]="0.16" [appMagneticTilt]="true" appCursorText="Inspect">
+        <div class="quant-panel__top">
+          <span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="mono">{{ data().title }}</span>
+        </div>
+
+        <div class="portrait-stack">
+          <div class="portrait-ring" aria-hidden="true"></div>
+          <img
+            [src]="data().profileImage || 'profile.jpeg'"
+            [alt]="data().name"
+            width="420"
+            height="420"
+            loading="eager"
+            decoding="async"
+          />
+          <span class="portrait-scan" aria-hidden="true"></span>
+        </div>
+
+        <div class="market-viz" aria-hidden="true">
+          <span style="--h: 38%"></span>
+          <span style="--h: 70%"></span>
+          <span style="--h: 46%"></span>
+          <span style="--h: 86%"></span>
+          <span style="--h: 58%"></span>
+          <span style="--h: 92%"></span>
+          <span style="--h: 64%"></span>
+        </div>
+
+        <div class="neural-viz" aria-hidden="true">
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+
+        <div class="hero-labels">
+          @for (interest of heroInterests(); track interest) {
+            <span class="floating-label mono">{{ interest }}</span>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-stats" appStagger=".stat" [appStaggerDelay]="1.92">
+    @for (stat of data().stats; track stat.label) {
+      <div class="stat">
+        <span class="stat-value mono">{{ stat.value }}</span>
+        <span class="stat-label">{{ stat.label }}</span>
+      </div>
+    }
+  </div>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      @for (item of tickerItems(); track $index) {
+        <span class="ticker-item mono">{{ item }} <span class="ticker-sep">▲</span></span>
+      }
+    </div>
+  </div>
+
+  <button class="scroll-cue mono" type="button" [appMagnetic]="0.2" appCursorText="Scroll" (click)="goTo('about')">
+    <span></span>
+    <em>scroll</em>
+  </button>
+</header>

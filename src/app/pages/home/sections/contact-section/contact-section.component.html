@@ -1,0 +1,49 @@
+<section class="section contact" id="contact" aria-labelledby="contact-title">
+  <div class="section-head" appReveal>
+    <span class="section-index mono">06</span>
+    <h3 id="contact-title">Contact</h3>
+  </div>
+
+  <div class="contact-layout">
+    <div class="contact-copy" appReveal>
+      <p class="contact-lead">Interested in InsurTech, Fintech or banking projects? Let's talk.</p>
+      <div class="contact-links">
+        <a class="btn btn-primary" [appMagnetic]="0.24" appCursorText="Email" [href]="'mailto:' + data().email">
+          {{ data().email }}
+        </a>
+        <a class="btn btn-ghost" [appMagnetic]="0.2" appCursorText="LinkedIn" [href]="data().linkedin" target="_blank" rel="noopener">
+          LinkedIn
+        </a>
+        <a class="btn btn-ghost" [appMagnetic]="0.2" appCursorText="GitHub" [href]="data().github" target="_blank" rel="noopener">
+          GitHub
+        </a>
+        <span class="btn btn-ghost phone mono">{{ data().phone }}</span>
+      </div>
+    </div>
+
+    <form
+      #contactForm
+      class="contact-form"
+      appReveal
+      (submit)="$event.preventDefault(); submit(contactForm)"
+      aria-label="Contact form"
+    >
+      <label class="field">
+        <input name="name" type="text" autocomplete="name" required placeholder=" " />
+        <span>Name</span>
+      </label>
+      <label class="field">
+        <input name="email" type="email" autocomplete="email" required placeholder=" " />
+        <span>Email</span>
+      </label>
+      <label class="field field--message">
+        <textarea name="message" rows="5" required placeholder=" "></textarea>
+        <span>Message</span>
+      </label>
+      <button class="btn btn-primary submit-btn" type="submit" [appMagnetic]="0.22" appCursorText="Send">
+        <span>{{ sent() ? 'Opening email' : 'Send message' }}</span>
+        <span class="btn-arrow" aria-hidden="true">↗</span>
+      </button>
+    </form>
+  </div>
+</section>

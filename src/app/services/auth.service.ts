@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 
-// SHA-256 of the default passcode: "seif-admin-2026"
+// SHA-256 hash of the default admin passcode.
 // Change passcode from the admin panel, or regenerate this hash and replace it here.
 const DEFAULT_HASH = '8813cf532f60b16c0c3de766a6bfa57a915804c2179fd2d9a2b3f5eaf819460d';
 const HASH_KEY = 'ser_admin_hash';

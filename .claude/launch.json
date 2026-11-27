@@ -4,8 +4,8 @@
     {
       "name": "ser-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["start"],
-      "port": 4200
+      "runtimeArgs": ["start", "--", "--port", "4210"],
+      "port": 4210
     }
   ]
 }
